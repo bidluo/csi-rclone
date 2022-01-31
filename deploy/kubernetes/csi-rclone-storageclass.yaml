@@ -3,4 +3,4 @@ kind: StorageClass
 metadata:
   name: rclone
   namespace: csi-rclone
-provisioner: kubernetes.io/no-provisioner
+provisioner: cluster.local/nfs-server-nfs-server-provisioner

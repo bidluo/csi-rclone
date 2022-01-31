@@ -15,6 +15,8 @@ spec:
         app: csi-nodeplugin-rclone
     spec:
       serviceAccountName: csi-nodeplugin-rclone
+      imagePullSecrets:
+        - name: mediafs
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
@@ -44,7 +46,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: wunderio/csi-rclone:v1.2.8
+          image: registry.digitalocean.com/mediafs/csi-rclone:latest
           args:
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -63,10 +65,15 @@ spec:
           volumeMounts:
             - name: plugin-dir
               mountPath: /plugin
+            - name: rclone-service-account
+              mountPath: /rclone-service-account
             - name: pods-mount-dir
               mountPath: /var/lib/kubelet/pods
               mountPropagation: "Bidirectional"
       volumes:
+        - name: rclone-service-account
+          secret:
+            secretName: rclone-service-account
         - name: plugin-dir
           hostPath:
             path: /var/lib/kubelet/plugins/csi-rclone
